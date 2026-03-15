@@ -1,11 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode
-} from "react";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const baseStyles =
@@ -24,48 +20,23 @@ type ButtonProps = {
   children: ReactNode;
   variant?: keyof typeof variants;
   className?: string;
-} & (
-  | ({ href: string } & AnchorHTMLAttributes<HTMLAnchorElement>)
-  | ({ href?: undefined } & ButtonHTMLAttributes<HTMLButtonElement>)
-);
+  href: string;
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function Button(props: ButtonProps) {
-  const { children, variant = "primary", className } = props;
+export function Button({
+  children,
+  variant = "primary",
+  className,
+  href,
+  ...props
+}: ButtonProps) {
   const classes = cn(baseStyles, variants[variant], className);
 
-  if ("href" in props && props.href) {
-    const anchorProps = { ...props };
-    const href = anchorProps.href;
-    delete anchorProps.variant;
-    delete anchorProps.className;
-    delete anchorProps.href;
-    delete anchorProps.children;
-
-    return (
-      <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-        <a className={classes} href={href} {...anchorProps}>
-          {children}
-        </a>
-      </motion.div>
-    );
-  }
-
-  const buttonProps = { ...props };
-  const type = buttonProps.type ?? "button";
-  delete buttonProps.variant;
-  delete buttonProps.className;
-  delete buttonProps.type;
-  delete buttonProps.children;
-
   return (
-    <motion.button
-      className={classes}
-      type={type}
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      {...buttonProps}
-    >
-      {children}
-    </motion.button>
+    <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+      <a className={classes} href={href} {...props}>
+        {children}
+      </a>
+    </motion.div>
   );
 }
